@@ -1,8 +1,6 @@
 package com.example.alkipark
 
-import com.example.alkipark.Parking
-import com.example.alkipark.Vehicle
-import com.example.alkipark.VehicleType
+import com.example.Parking
 import java.util.*
 
 fun main(){
@@ -12,16 +10,21 @@ fun main(){
     val bus = Vehicle("CBD343", VehicleType.Bus, Calendar.getInstance(), "DISCOUNT_003")
     //println(bus)
 
-    val parking = Parking(mutableSetOf(auto, moto, bus))
+    val parking = Parking(mutableSetOf())
 
     //println(parking.vehicles.contains(auto))
 
     val moto1 = Vehicle("ABC123", VehicleType.Bus, Calendar.getInstance(), "DISCOUNT_003")
-    //val isCar2Inserted = parking.vehicles.add(moto1)
+    val isCar2Inserted = parking.vehicles.add(moto1)
     //println(parking.vehicles)
     //println(isCar2Inserted)
 
     for (i in 1..23){
         parking.addVehicle(Vehicle(i.toString(), VehicleType.Car, Calendar.getInstance()))
     }
+
+    parking.removeVehicle("ABC123")
+    parking.listVehicles()
+
+    println(parking.earnings)
 }

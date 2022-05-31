@@ -5,7 +5,7 @@ import javax.xml.datatype.DatatypeConstants.MINUTES
 
 const val MINUTE_IN_MILISECONDS = 60000
 
-// We declared discountCard as a Nullable String type
+// We declared discountCard as a Nullable String type with a default value of null.
 data class Vehicle(val plate: String, val type: VehicleType, val checkInTime: Calendar, val discountCard: String?=null ){
 
 
