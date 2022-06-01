@@ -1,62 +1,52 @@
 package com.example.alkipa
 
 import com.example.alkipark.Vehicle
-import com.example.alkipark.VehicleType
-
-
 import java.util.*
-import javax.xml.datatype.DatatypeConstants.MINUTES
 const val MINUTE_IN_MILISECONDS = 60000
 
 open class ParkingSpace(val vehicles: MutableSet<Vehicle>){
 
-    
-    var less: Int = 0
-    var earn :Int  =0
-     fun checkOut(plate: String) : Int {
+    var parkedTime: Long = 0
 
-        val vehicle: Vehicle? = vehicles.find { it.plate == plate }
+     fun checkOut(plate: String) : Int {                                                            //Returns the fee, or -1 if the checkout failed
+
+        val vehicle: Vehicle? = vehicles.find { it.plate == plate }                                 //We find for the car with the plate
         vehicle?.let {
-            val parkedTime: Long = (Calendar.getInstance().timeInMillis -
+            parkedTime = (Calendar.getInstance().timeInMillis -                                     //If the car is parked, this block runs
                     it.checkInTime.timeInMillis) / MINUTE_IN_MILISECONDS
-            val fee = calculateFee(parkedTime, vehicle.type.fee, !vehicle.discountCard.isNullOrEmpty())
+           val fee = calculateFee(parkedTime, vehicle.type.fee, !vehicle.discountCard.isNullOrEmpty()) //Here we calculate the Fee
             onSuccess(fee)
-            vehicles.remove(vehicle)                                                                                        //Llamar remove(vehicle )
+            vehicles.remove(vehicle)                                                                //We remove the vehicle from the set
             return fee
         } ?: run{
-                onError()
-           return -1
-                }
+            onError()                                                                               //If the car isn´t parked, this block would be runned.
+            return -1
+        }
     }
 
-    fun calculateFee(parkedTime: Long, feeType: Int, hasDicountCard: Boolean): Int {
+    fun calculateFee(parkedTime: Long, feeType: Int, hasDicountCard: Boolean): Int {                //Given those parameters, return the fee to be payed.
 
-        var fee = 0
-        var myParkedTime =
-            parkedTime                                                              //Because we receive a fixed parameter, so we can´t modify it.
-        val fragmentsTime: Int                                                      //???? No se porq no pude inicializarlo
-        if (myParkedTime >= 120) {
-            fee += feeType
-            myParkedTime -= 120
-            fragmentsTime = Math.ceil(myParkedTime.toDouble() / 15).toInt()
-        } else {
-            fragmentsTime = Math.ceil((parkedTime.toDouble() / 15))
-                .toInt()                                                            //Math.ceil rounds a Double value to the next larger Int
-        }
-        fee += (fragmentsTime * 5)
-        if (hasDicountCard) {
-            fee = (fee.toDouble() * 0.85).toInt()                                   //????Dice descartar centavos, no redondear.
-        }
-        return fee
+    var fee = 0
+    var myParkedTime = parkedTime                                                                   //Because we receive a fixed parameter, so we can´t modify it.
+    var fragmentsTime = 0
+    myParkedTime -= 120
+    if (myParkedTime > 0){
+        fragmentsTime = Math.ceil(myParkedTime.toDouble() / 15).toInt()                             //Math.ceil rounds a Double value to the next larger Int
     }
+    fee += feeType
+    fee += (fragmentsTime * 5)
+    if (hasDicountCard) {
+        fee = (fee.toDouble() * 0.85).toInt()                                                       //We round the value.
+    }
+    return fee
+}
 
-
-    fun onSuccess(fee: Int){
+    fun onSuccess(fee: Int){                                                                        //Called if the checkOut is done correctly
         println("Your fee is $$fee. Come back soon.")
     }
 
     fun onError(){
-        println("Sorry, the check-out failed.")
+        println("Sorry, the check-out failed.")                                                     //Called if the checkOut fail.
     }
 
  }

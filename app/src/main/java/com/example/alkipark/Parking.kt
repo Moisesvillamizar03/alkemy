@@ -25,18 +25,21 @@ data class Parking(val parkingVehicles: MutableSet<Vehicle>): ParkingSpace(parki
 
     }
 
-     fun removeVehicle(plate: String){
-         val fee = ParkingSpace(vehicles).checkOut(plate)
-         if(fee != -1){
-             earnings = earnings.copy(first = earnings.first + fee)
-             earnings = earnings.copy(second = earnings.second + 1)
+     fun removeVehicle(plate: String){                                                              //Beginning of the checkout
+         val fee = ParkingSpace(vehicles).checkOut(plate)                                           //This call the checkout and receive the fee
+         if(fee != -1){                                                                             //If the fee isn´t -1, seems that the checkout finished well.
+             earnings = earnings.copy(first = earnings.first + fee)                                 //The total earning is updated.
+             earnings = earnings.copy(second = earnings.second + 1)                                 //The total amount of withdrawn vehicles is updated.
          }
      }
 
-    fun listVehicles(){
+    fun listVehicles(){                                                                             //List only the plate of the parked vehicles.
         println("Plates of parked vehicles: ")
         vehicles.toList().forEach { println(it.plate) }
     }
 
+    fun getTotalEarnings(){
+        println( "${earnings.second} vehicles have checked out and have earnings of $${earnings.first}")
+    }
 
 }
